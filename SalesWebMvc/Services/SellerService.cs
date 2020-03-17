@@ -3,6 +3,7 @@ using SalesWebMvc.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Services.Exceptions;
 
 namespace SalesWebMvc.Services
 {
@@ -36,6 +37,33 @@ namespace SalesWebMvc.Services
             var obj = _context.Seller.Find(id);
             _context.Seller.Remove(obj);
             _context.SaveChanges();
+        }
+
+        public void Update(Seller obj)
+        {
+            if (!_context.Seller.Any(x => x.Id == obj.Id))
+            {
+                throw new NotFoundException("Id not found");
+            }
+
+            try
+            {
+                _context.Update(obj);
+                _context.SaveChanges();
+            }
+            //Possivel exceção de concorrencia do banco de dados
+            catch (DbUpdateConcurrencyException e)
+            {
+                /*
+                 * --Importante para segregar as camadas--
+                 * Interceptando uma exceção do nivel de acesso a dados e relançando essa mesma exceção
+                 * só que em nível de serviço.
+                 * A minha camada de serviço, não irá propagar uma exceção de acesso a dados, pois caso aconteça
+                 * ela lançara uma exceção da camada dela mesmo.
+                 * Sendo assim, o controlador apenas irá lidar com a exceção da camada de serviço.
+                */
+                throw new DbConcurrencyException(e.Message);
+            }
         }
     }
 }

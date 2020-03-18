@@ -23,12 +23,12 @@ namespace SalesWebMvc.Services
 
             if (minDate.HasValue)
             {
-                result = result.Where(x => x.Date >= minDate.Value);
+                result = result.Where(x => x.Date >= minDate.Value).Where(x => x.Status != Models.Enums.SaleStatus.Canceled);
             }
 
             if (maxDate.HasValue)
             {
-                result = result.Where(x => x.Date <= maxDate.Value);
+                result = result.Where(x => x.Date <= maxDate.Value).Where(x => x.Status != Models.Enums.SaleStatus.Canceled);
             }
 
             return await result
@@ -44,12 +44,12 @@ namespace SalesWebMvc.Services
 
             if (minDate.HasValue)
             {
-                result = result.Where(x => x.Date >= minDate.Value);
+                result = result.Where(x => x.Date >= minDate.Value).Where(x => x.Status != Models.Enums.SaleStatus.Canceled);
             }
 
             if (maxDate.HasValue)
             {
-                result = result.Where(x => x.Date <= maxDate.Value);
+                result = result.Where(x => x.Date <= maxDate.Value).Where(x => x.Status != Models.Enums.SaleStatus.Canceled);
             }
 
             return await result

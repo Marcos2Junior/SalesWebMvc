@@ -14,7 +14,6 @@ namespace SalesWebMvc.Models
 
         [Required(ErrorMessage = "{0} required")]
         [EmailAddress(ErrorMessage = "Enter a valid email")]
-        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
@@ -25,7 +24,6 @@ namespace SalesWebMvc.Models
         [Required(ErrorMessage = "{0} required")]
         [DataType(DataType.Password)]
         [StringLength(15, MinimumLength = 8, ErrorMessage = "{0} size should be between {2} and {1}")]
-        [Display(Name = "Password")]
         public string Password { get; set; }
 
         public Permission Permission { get; set; }

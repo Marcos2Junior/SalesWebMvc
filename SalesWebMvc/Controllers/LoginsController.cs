@@ -17,6 +17,26 @@ namespace SalesWebMvc.Controllers
             _loginService = loginService;
         }
 
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(Login login)
+        {
+            var obj = await _loginService.LoginAsync(login);
+
+            if (obj == null)
+            {
+                ViewData["falhaLogin"] = "Usuário ou senha inválido";
+                return View(login);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Logins
         public async Task<IActionResult> Index()
         {

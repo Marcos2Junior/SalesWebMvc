@@ -77,5 +77,11 @@ namespace SalesWebMvc.Services
                 throw new DbConcurrencyException(e.Message);
             }
         }
+
+        public async Task<Login> LoginAsync(Login login)
+        {
+            return await _context.Login.Where(x => x.Name == login.Name && x.Password == login.Password).FirstOrDefaultAsync();
+
+        }
     }
 }

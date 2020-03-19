@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +51,9 @@ namespace SalesWebMvc.Controllers
                 return View(viewModel);
             }
 
-           await _sellerService.InsertAsync(seller);
+            seller.Imagem = UploadImage();
+
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index));
         }
 
@@ -142,6 +146,8 @@ namespace SalesWebMvc.Controllers
 
             try
             {
+                seller.Imagem = UploadImage();
+
                 await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
@@ -160,6 +166,52 @@ namespace SalesWebMvc.Controllers
             };
 
             return View(viewModel);
+        }
+
+        private string UploadImage()
+        {
+            var newFileName = string.Empty;
+
+            if (HttpContext.Request.Form.Files != null)
+            {
+                var fileName = string.Empty;
+
+                var files = HttpContext.Request.Form.Files;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                        var myUniqueFileName = Convert.ToString(Guid.NewGuid());
+
+                        var FileExtension = Path.GetExtension(fileName);
+
+                        newFileName = myUniqueFileName + FileExtension;
+
+                        fileName = Path.Combine(@"C:\Users\marcos.junior\Documents\ProjetoWeb\SalesWebMvc\SalesWebMvc\wwwroot", "images\\sellers") + $@"\{newFileName}";
+
+                        try
+                        {
+                            using (FileStream fs = System.IO.File.Create(fileName))
+                            {
+                                file.CopyTo(fs);
+                                fs.Flush();
+                            }
+
+                            return fileName;
+
+                        }
+                        catch (Exception)
+                        {
+                            return string.Empty;
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

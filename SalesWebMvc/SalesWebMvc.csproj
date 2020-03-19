@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <Folder Include="Classes\" />
+    <Folder Include="wwwroot\images\products\" />
+    <Folder Include="wwwroot\images\sellers\" />
   </ItemGroup>
 
 </Project>

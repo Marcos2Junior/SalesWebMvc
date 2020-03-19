@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Services;
@@ -6,6 +7,8 @@ using SalesWebMvc.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace SalesWebMvc.Controllers
@@ -69,6 +72,8 @@ namespace SalesWebMvc.Controllers
                 return View(viewModel);
             }
 
+            product.Imagem = UploadImage();
+
             await _productService.InsertAsync(product);
             return RedirectToAction(nameof(Index));
         }
@@ -93,7 +98,6 @@ namespace SalesWebMvc.Controllers
             ProductFormViewModel viewModel = new ProductFormViewModel { Categories = categories, Product = obj };
 
             return View(viewModel);
-
         }
 
         // POST: Products/Edit/5
@@ -115,9 +119,10 @@ namespace SalesWebMvc.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id ismatch" });
             }
 
-
             try
             {
+                product.Imagem = UploadImage();
+
                 await _productService.UpdateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -171,6 +176,52 @@ namespace SalesWebMvc.Controllers
             };
 
             return View(viewModel);
+        }
+
+        private string UploadImage()
+        {
+            var newFileName = string.Empty;
+
+            if (HttpContext.Request.Form.Files != null)
+            {
+                var fileName = string.Empty;
+
+                var files = HttpContext.Request.Form.Files;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                        var myUniqueFileName = Convert.ToString(Guid.NewGuid());
+
+                        var FileExtension = Path.GetExtension(fileName);
+
+                        newFileName = myUniqueFileName + FileExtension;
+
+                        fileName = Path.Combine(@"C:\Users\marcos.junior\Documents\ProjetoWeb\SalesWebMvc\SalesWebMvc\wwwroot", "images\\products") + $@"\{newFileName}";
+
+                        try
+                        {
+                            using (FileStream fs = System.IO.File.Create(fileName))
+                            {
+                                file.CopyTo(fs);
+                                fs.Flush();
+                            }
+
+                            return newFileName;
+
+                        }
+                        catch (Exception)
+                        {
+                            return string.Empty;
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

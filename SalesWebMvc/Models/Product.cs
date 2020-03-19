@@ -24,16 +24,19 @@ namespace SalesWebMvc.Models
 
         public int CategoryId { get; set; }
 
+        public string Imagem { get; set; }
+
         public Product()
         { }
 
-        public Product(int id, string name, string description, double price, Category category)
+        public Product(int id, string name, string description, double price, Category category, string imagem)
         {
             Id = id;
             Name = name;
             Description = description;
             Price = price;
             Category = category;
+            Imagem = imagem;
         }
     }
 }

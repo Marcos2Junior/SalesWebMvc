@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,14 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Departments
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Department.ToListAsync());
         }
 
         // GET: Departments/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -66,6 +69,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Departments/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +121,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Departments/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Services;
@@ -21,6 +22,7 @@ namespace SalesWebMvc.Controllers
             _departmentService = departmentService;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var list = await _sellerService.FindAllAsync();
@@ -28,6 +30,7 @@ namespace SalesWebMvc.Controllers
             return View(list);
         }
 
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.FindAllAsync();
@@ -50,6 +53,7 @@ namespace SalesWebMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -82,6 +86,7 @@ namespace SalesWebMvc.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -99,6 +104,7 @@ namespace SalesWebMvc.Controllers
             return View(obj);
         }
 
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

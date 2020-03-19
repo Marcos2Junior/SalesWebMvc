@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Data;
 using SalesWebMvc.Services;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SalesWebMvc
 {
@@ -34,6 +35,9 @@ namespace SalesWebMvc
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => options.LoginPath = "/Logins/Login");
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -61,6 +65,8 @@ namespace SalesWebMvc
                 SupportedUICultures = new List<CultureInfo> { ptBr }
             };
 
+            app.UseAuthentication();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -80,7 +86,7 @@ namespace SalesWebMvc
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Logins}/{action=Login}/{id?}");
             });
         }
     }

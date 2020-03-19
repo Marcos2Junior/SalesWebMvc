@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Models;
 using SalesWebMvc.Services;
 using SalesWebMvc.Services.Exceptions;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SalesWebMvc.Controllers
@@ -22,6 +28,12 @@ namespace SalesWebMvc.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(Login login)
@@ -34,10 +46,33 @@ namespace SalesWebMvc.Controllers
                 return View(login);
             }
 
-            return RedirectToAction(nameof(Index));
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, login.Name),
+                new Claim(ClaimTypes.Role, "Usuario_Comum")
+            };
+
+            var identidadeDeUsuario = new ClaimsIdentity(claims, "Login");
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identidadeDeUsuario);
+
+            var propriedadeDeAutentificacao = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                ExpiresUtc = DateTime.Now.ToLocalTime().AddHours(2),
+                IsPersistent = true
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, propriedadeDeAutentificacao);
+
+            return RedirectToRoute(new
+            {
+                controller = "Home",
+                action = "Index"
+            });
         }
 
         // GET: Logins
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var list = await _loginService.FindAllAsync();
@@ -45,6 +80,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Logins/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -63,6 +99,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Logins/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -85,6 +122,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Logins/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -131,6 +169,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Logins/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

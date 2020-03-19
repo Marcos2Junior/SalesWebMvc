@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Services;
 using SalesWebMvc.Services.Exceptions;
@@ -21,6 +22,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Products
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var list = await _productService.FindAllAsync();
@@ -28,6 +30,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Products/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Products/Create
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryService.FindAllAsync();
@@ -70,6 +74,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -123,6 +128,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

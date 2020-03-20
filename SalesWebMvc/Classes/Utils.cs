@@ -19,6 +19,7 @@ namespace SalesWebMvc.Classes
             {
                 File.Delete(Directory.GetCurrentDirectory()
                + "\\wwwroot\\images\\" + typeFolder + "\\" + image);
+                //testando
             }
             catch (Exception)
             {

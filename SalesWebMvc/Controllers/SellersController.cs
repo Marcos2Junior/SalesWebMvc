@@ -190,7 +190,8 @@ namespace SalesWebMvc.Controllers
 
                         newFileName = myUniqueFileName + FileExtension;
 
-                        fileName = Path.Combine(@"C:\Users\marcos.junior\Documents\ProjetoWeb\SalesWebMvc\SalesWebMvc\wwwroot", "images\\sellers") + $@"\{newFileName}";
+                        Directory.CreateDirectory(Directory.GetCurrentDirectory().ToString() + "\\wwwroot\\images\\sellers");
+                        fileName = Path.Combine(Directory.GetCurrentDirectory().ToString(), "wwwroot\\images\\sellers") + $@"\{newFileName}";
 
                         try
                         {
@@ -200,7 +201,7 @@ namespace SalesWebMvc.Controllers
                                 fs.Flush();
                             }
 
-                            return fileName;
+                            return newFileName;
 
                         }
                         catch (Exception)

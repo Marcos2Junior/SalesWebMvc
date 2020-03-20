@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Login">
+        <form asp-action="Login" class="form-group">
             <div class="form-group">
                 <p class="text-danger">@ViewData["falhaLogin"]</p>
+
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
             </div>

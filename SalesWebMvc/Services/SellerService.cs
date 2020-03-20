@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Services.Exceptions;
 using System.Threading.Tasks;
+using SalesWebMvc.Classes;
 
 namespace SalesWebMvc.Services
 {
@@ -40,6 +41,9 @@ namespace SalesWebMvc.Services
                 var obj = await _context.Seller.FindAsync(id);
                 _context.Seller.Remove(obj);
                 await _context.SaveChangesAsync();
+
+                Utils util = new Utils();
+                util.RemoveImage("sellers", obj.Imagem);
             }
             catch (DbUpdateException)
             {
